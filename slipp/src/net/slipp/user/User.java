@@ -12,11 +12,7 @@ import com.google.gson.annotations.Expose;
 import net.slipp.db.Database;
 
 public class User {
-	
-	//정규표현식 이용
-	//@Pattern(regexp = "A-Xa-z]\\d[A-Za-z]\\s?\\d[A-Za-z]\\d"
-	//, message="Postal code validation failed.") -> 레귤러익스프레스에 어긋날때 보내는 매시지
-	
+
 	@Expose
 	@NotNull
 	@Size(min=4, max=12)
