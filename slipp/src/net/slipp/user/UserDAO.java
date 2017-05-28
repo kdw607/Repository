@@ -32,12 +32,7 @@ public class UserDAO {
 		JdbcTemplate jdbc = new JdbcTemplate(){
 
 			@Override
-			public String createQuery() {
-				return "insert into users values(?, ?, ?, ?)";
-			}
-
-			@Override
-			public void setParameters(User user, PreparedStatement pstmt)
+			public void setParameters(PreparedStatement pstmt)
 					throws SQLException {
 				pstmt.setString(1, user.getUserId());
 				pstmt.setString(2, user.getPassword());
@@ -46,13 +41,16 @@ public class UserDAO {
 			}
 			
 		};
-		jdbc.executeUpdate(user);
+		
+		String sql = "insert into users values(?, ?, ?, ?)";
+		jdbc.executeUpdate(sql);
 	}
 
 
 	public User findByUserId(String userId) throws SQLException{
 
 		String sql = "select * from users where userId = ?";
+		
 		Connection conn=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
@@ -90,51 +88,32 @@ public class UserDAO {
 
 	public void removeUser(String userId) throws SQLException {
 
-		String sql = "delete from users where userId = ?";
-		Connection conn=null;
-		PreparedStatement pstmt=null;
+		JdbcTemplate jdbc = new JdbcTemplate() {
+			
+			@Override
+			public void setParameters(PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1,  userId);
+			}
+		};
 		
-		try {
-			conn = getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1,  userId);
-			
-			pstmt.executeUpdate();
-		}finally{
-			if(pstmt != null){
-				pstmt.close();
-			}
-			
-			if(conn != null){
-				conn.close();
-			}
-		}
+		String sql = "delete from users where userId = ?";
+		jdbc.executeUpdate(sql);
 	}
 
 	public void updateUser(User user) throws SQLException {
 		
-		String sql = "update users set password=?, name=?, email=? where userId=?";
-		Connection conn=null;
-		PreparedStatement pstmt=null;
-		
-		try {
-			conn = getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, user.getPassword());
-			pstmt.setString(2, user.getName());
-			pstmt.setString(3, user.getEmail());
-			pstmt.setString(4, user.getUserId());
+		JdbcTemplate jdbc = new JdbcTemplate() {
 			
-			pstmt.executeUpdate();
-			
-		}finally{
-			if(pstmt != null){
-				pstmt.close();
+			@Override
+			public void setParameters(PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1, user.getPassword());
+				pstmt.setString(2, user.getName());
+				pstmt.setString(3, user.getEmail());
+				pstmt.setString(4, user.getUserId());
 			}
-			
-			if(conn != null){
-				conn.close();
-			}	
-		}
+		};
+		
+		String sql = "update users set password=?, name=?, email=? where userId=?";
+		jdbc.executeUpdate(sql);
 	}
 }
