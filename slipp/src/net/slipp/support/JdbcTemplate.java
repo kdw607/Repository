@@ -9,22 +9,6 @@ import net.slipp.user.User;
 import net.slipp.user.UserDAO;
 
 public abstract class JdbcTemplate {
-	
-	public Connection getConnection() throws SQLException {
-
-		String url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String id = "board";
-		String pw = "board";
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			return DriverManager.getConnection(url, id, pw);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-
-	}
 
 	public void executeUpdate(String sql) throws SQLException {
 				
@@ -32,7 +16,7 @@ public abstract class JdbcTemplate {
 		PreparedStatement pstmt=null;
 		
 		try {
-			conn = getConnection();
+			conn = ConnectionManager.getConnection();
 			
 			pstmt = conn.prepareStatement(sql);
 			setParameters(pstmt);

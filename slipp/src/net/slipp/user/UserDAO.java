@@ -12,22 +12,6 @@ import net.slipp.support.SelectJdbcTemplate;
 
 public class UserDAO {
 
-	public Connection getConnection() throws SQLException {
-
-		String url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String id = "board";
-		String pw = "board";
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			return DriverManager.getConnection(url, id, pw);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-
-	}
-
 	public void addUser(User user) throws SQLException {
 		
 		JdbcTemplate jdbc = new JdbcTemplate(){
@@ -59,7 +43,7 @@ public class UserDAO {
 			}
 
 			@Override
-			public User mapRow(ResultSet rs) throws SQLException {
+			public Object mapRow(ResultSet rs) throws SQLException {
 				if(!rs.next()){
 					return null;
 				}
@@ -71,7 +55,7 @@ public class UserDAO {
 		};
 
 		String sql = "select * from users where userId = ?";
-		return sjdbc.executeQuery(sql);
+		return (User)sjdbc.executeQuery(sql);
 
 	}
 

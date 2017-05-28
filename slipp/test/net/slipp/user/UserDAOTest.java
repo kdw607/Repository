@@ -16,18 +16,8 @@ public class UserDAOTest {
 	public void setup() {
 
 		userDao = new UserDAO();
-
-	}
-	
-	@Test
-	public void connection() throws SQLException {
-		
-		UserDAO userDao = new UserDAO();
-		Connection con = userDao.getConnection();
-		assertNotNull(con);
 	}
 
-	
 	@Test
 	public void crud() throws Exception{
 		
