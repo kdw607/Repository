@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.slipp.support.JdbcTemplate;
+import net.slipp.support.SelectJdbcTemplate;
 
 public class UserDAO {
 
@@ -49,42 +50,31 @@ public class UserDAO {
 
 	public User findByUserId(String userId) throws SQLException{
 
-		String sql = "select * from users where userId = ?";
-		
-		Connection conn=null;
-		PreparedStatement pstmt=null;
-		ResultSet rs=null;
-		
-		try {
-			conn = getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, userId);	
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()){
-				User user = new User(rs.getString("userId"),
-									 rs.getString("password"),
-									 rs.getString("name"),
-									 rs.getString("email"));
-				return user;
+		SelectJdbcTemplate sjdbc = new SelectJdbcTemplate(){
+
+			@Override
+			public void setParameters(PreparedStatement pstmt)
+					throws SQLException {
+				pstmt.setString(1, userId);
 			}
 
-		}finally{
-			if(rs != null){
-				rs.close();
+			@Override
+			public User mapRow(ResultSet rs) throws SQLException {
+				if(!rs.next()){
+					return null;
+				}
+				return new User(rs.getString("userId"),
+								rs.getString("password"),
+								rs.getString("name"),
+								rs.getString("email"));
 			}
-			
-			if(pstmt != null){
-				pstmt.close();
-			}
-			
-			if(conn != null){
-				conn.close();
-			}
-		}
-		return null;
+		};
+
+		String sql = "select * from users where userId = ?";
+		return sjdbc.executeQuery(sql);
+
 	}
+
 
 	public void removeUser(String userId) throws SQLException {
 
@@ -92,7 +82,7 @@ public class UserDAO {
 			
 			@Override
 			public void setParameters(PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1,  userId);
+				pstmt.setString(1, userId);
 			}
 		};
 		
