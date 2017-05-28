@@ -29,22 +29,26 @@ public class UserDAO {
 
 	public void addUser(User user) throws SQLException {
 		
-		JdbcTemplate jdbc = new JdbcTemplate();
-		jdbc.executeUpdate(user, this);
+		JdbcTemplate jdbc = new JdbcTemplate(){
+
+			@Override
+			public String createQuery() {
+				return "insert into users values(?, ?, ?, ?)";
+			}
+
+			@Override
+			public void setParameters(User user, PreparedStatement pstmt)
+					throws SQLException {
+				pstmt.setString(1, user.getUserId());
+				pstmt.setString(2, user.getPassword());
+				pstmt.setString(3, user.getName());
+				pstmt.setString(4, user.getEmail());
+			}
+			
+		};
+		jdbc.executeUpdate(user);
 	}
 
-	public void setParameters(User user, PreparedStatement pstmt)
-			throws SQLException {
-		pstmt.setString(1, user.getUserId());
-		pstmt.setString(2, user.getPassword());
-		pstmt.setString(3, user.getName());
-		pstmt.setString(4, user.getEmail());
-	}
-
-	public String createQuery() {
-		String sql = "insert into users values(?, ?, ?, ?)";
-		return sql;
-	}
 
 	public User findByUserId(String userId) throws SQLException{
 
