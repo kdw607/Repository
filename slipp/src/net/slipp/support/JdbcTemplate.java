@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import net.slipp.user.User;
 import net.slipp.user.UserDAO;
 
-public abstract class JdbcTemplate {
+public class JdbcTemplate {
 
 	public void executeUpdate(String sql, PreparedStatementSetter pss) throws SQLException {
 		
@@ -33,7 +33,8 @@ public abstract class JdbcTemplate {
 		}
 	}
 	
-	public Object executeQuery(String sql) throws SQLException{
+	public Object executeQuery(String sql, PreparedStatementSetter pss, RowMapper rm)
+			throws SQLException{
 		
 		Connection conn=null;
 		PreparedStatement pstmt=null;
@@ -42,24 +43,25 @@ public abstract class JdbcTemplate {
 		try {
 			conn = ConnectionManager.getConnection();
 			pstmt = conn.prepareStatement(sql);
-			setParameters(pstmt);	
+			pss.setParameters(pstmt);	
 			
 			rs = pstmt.executeQuery();
-			return mapRow(rs);
+			
+			if(!rs.next()){
+				return null;
+			}
+			
+			return rm.mapRow(rs);
 		}finally{
 			if(rs != null){
 				rs.close();
 			}
-			
 			if(pstmt != null){
 				pstmt.close();
-			}
-			
+			}	
 			if(conn != null){
 				conn.close();
 			}
 		}
 	}
-	public abstract void setParameters(PreparedStatement pstmt)throws SQLException;
-	public abstract Object mapRow(ResultSet rs) throws SQLException;
 }
