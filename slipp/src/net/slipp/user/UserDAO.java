@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.slipp.support.JdbcTemplate;
-import net.slipp.support.SelectJdbcTemplate;
+import net.slipp.support.bark_SelectJdbcTemplate;
 
 public class UserDAO {
 
@@ -24,6 +24,11 @@ public class UserDAO {
 				pstmt.setString(3, user.getName());
 				pstmt.setString(4, user.getEmail());
 			}
+
+			@Override
+			public Object mapRow(ResultSet rs) throws SQLException {
+				return null;
+			}
 			
 		};
 		
@@ -34,7 +39,7 @@ public class UserDAO {
 
 	public User findByUserId(String userId) throws SQLException{
 
-		SelectJdbcTemplate sjdbc = new SelectJdbcTemplate(){
+		JdbcTemplate jdbc = new JdbcTemplate(){
 
 			@Override
 			public void setParameters(PreparedStatement pstmt)
@@ -55,7 +60,7 @@ public class UserDAO {
 		};
 
 		String sql = "select * from users where userId = ?";
-		return (User)sjdbc.executeQuery(sql);
+		return (User)jdbc.executeQuery(sql);
 
 	}
 
@@ -67,6 +72,11 @@ public class UserDAO {
 			@Override
 			public void setParameters(PreparedStatement pstmt) throws SQLException {
 				pstmt.setString(1, userId);
+			}
+
+			@Override
+			public Object mapRow(ResultSet rs) throws SQLException {
+				return null;
 			}
 		};
 		
@@ -84,6 +94,11 @@ public class UserDAO {
 				pstmt.setString(2, user.getName());
 				pstmt.setString(3, user.getEmail());
 				pstmt.setString(4, user.getUserId());
+			}
+
+			@Override
+			public Object mapRow(ResultSet rs) throws SQLException {
+				return null;
 			}
 		};
 		

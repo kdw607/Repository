@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import net.slipp.user.User;
 
-public abstract class SelectJdbcTemplate {
+public abstract class bark_SelectJdbcTemplate {
 	
 	public Object executeQuery(String sql) throws SQLException{
 		
