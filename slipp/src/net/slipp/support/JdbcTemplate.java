@@ -11,25 +11,22 @@ import net.slipp.user.UserDAO;
 
 public abstract class JdbcTemplate {
 
-	public void executeUpdate(String sql) throws SQLException {
-				
+	public void executeUpdate(String sql, PreparedStatementSetter pss) throws SQLException {
+		
 		Connection conn=null;
 		PreparedStatement pstmt=null;
 		
 		try {
 			conn = ConnectionManager.getConnection();
-			
 			pstmt = conn.prepareStatement(sql);
-			setParameters(pstmt);
+			pss.setParameters(pstmt);
 			
 			pstmt.executeUpdate();
 			
 		} finally{
-			
 			if(pstmt != null){
 				pstmt.close();
 			}
-			
 			if(conn != null){
 				conn.close();
 			}

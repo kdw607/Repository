@@ -8,12 +8,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.slipp.support.JdbcTemplate;
+import net.slipp.support.PreparedStatementSetter;
 import net.slipp.support.bark_SelectJdbcTemplate;
 
 public class UserDAO {
 
 	public void addUser(User user) throws SQLException {
 		
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
+			
+			@Override
+			public void setParameters(PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1, user.getUserId());
+				pstmt.setString(2, user.getPassword());
+				pstmt.setString(3, user.getName());
+				pstmt.setString(4, user.getEmail());				
+			}
+		};
 		JdbcTemplate jdbc = new JdbcTemplate(){
 
 			@Override
@@ -22,7 +33,7 @@ public class UserDAO {
 				pstmt.setString(1, user.getUserId());
 				pstmt.setString(2, user.getPassword());
 				pstmt.setString(3, user.getName());
-				pstmt.setString(4, user.getEmail());
+				pstmt.setString(4, user.getEmail());	
 			}
 
 			@Override
@@ -33,7 +44,7 @@ public class UserDAO {
 		};
 		
 		String sql = "insert into users values(?, ?, ?, ?)";
-		jdbc.executeUpdate(sql);
+		jdbc.executeUpdate(sql, pss);
 	}
 
 
@@ -67,6 +78,13 @@ public class UserDAO {
 
 	public void removeUser(String userId) throws SQLException {
 
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
+			
+			@Override
+			public void setParameters(PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1, userId);				
+			}
+		};
 		JdbcTemplate jdbc = new JdbcTemplate() {
 			
 			@Override
@@ -81,11 +99,20 @@ public class UserDAO {
 		};
 		
 		String sql = "delete from users where userId = ?";
-		jdbc.executeUpdate(sql);
+		jdbc.executeUpdate(sql, pss);
 	}
 
 	public void updateUser(User user) throws SQLException {
-		
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
+			
+			@Override
+			public void setParameters(PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1, user.getPassword());
+				pstmt.setString(2, user.getName());
+				pstmt.setString(3, user.getEmail());
+				pstmt.setString(4, user.getUserId());				
+			}
+		};
 		JdbcTemplate jdbc = new JdbcTemplate() {
 			
 			@Override
@@ -103,6 +130,6 @@ public class UserDAO {
 		};
 		
 		String sql = "update users set password=?, name=?, email=? where userId=?";
-		jdbc.executeUpdate(sql);
+		jdbc.executeUpdate(sql, pss);
 	}
 }
