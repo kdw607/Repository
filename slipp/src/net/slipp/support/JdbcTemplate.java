@@ -35,27 +35,18 @@ public class JdbcTemplate {
 	
 	public void executeUpdate(String sql, Object... parameters) throws SQLException {
 		
-		Connection conn=null;
-		PreparedStatement pstmt=null;
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
+			
+			@Override
+			public void setParameters(PreparedStatement pstmt) throws SQLException {
+				for (int i = 0; i < parameters.length; i++) {
+					pstmt.setObject(i+1, parameters[i]);
+				}
+			}
+		};
 		
-		try {
-			conn = ConnectionManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			
-			for (int i = 0; i < parameters.length; i++) {
-				pstmt.setObject(i+1, parameters[i]);
-			}
-
-			pstmt.executeUpdate();
-			
-		} finally{
-			if(pstmt != null){
-				pstmt.close();
-			}
-			if(conn != null){
-				conn.close();
-			}
-		}
+		executeUpdate(sql, pss);
+		
 	}
 	
 	public <T> T executeQuery(String sql, RowMapper<T> rm, PreparedStatementSetter pss)
@@ -93,35 +84,15 @@ public class JdbcTemplate {
 	public <T> T executeQuery(String sql, RowMapper<T> rm,  Object... parameters)
 			throws SQLException{
 		
-		Connection conn=null;
-		PreparedStatement pstmt=null;
-		ResultSet rs=null;
-		
-		try {
-			conn = ConnectionManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
 			
-			for (int i = 0; i < parameters.length; i++) {
-				 pstmt.setObject(i+1, parameters[i]);
+			@Override
+			public void setParameters(PreparedStatement pstmt) throws SQLException {
+				for (int i = 0; i < parameters.length; i++) {
+					pstmt.setObject(i+1, parameters[i]);
+				}
 			}
-			
-			rs = pstmt.executeQuery();
-			
-			if(!rs.next()){
-				return null;
-			}
-			
-			return rm.mapRow(rs);
-		}finally{
-			if(rs != null){
-				rs.close();
-			}
-			if(pstmt != null){
-				pstmt.close();
-			}	
-			if(conn != null){
-				conn.close();
-			}
-		}
+		};
+		return executeQuery(sql, rm, pss);
 	}
 }
