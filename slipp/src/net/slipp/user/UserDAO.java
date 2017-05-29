@@ -8,14 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import net.slipp.support.JdbcTemplate;
-import net.slipp.support.PreparedStatementSetter;
-import net.slipp.support.RowMapper;
 import net.slipp.support.bark_SelectJdbcTemplate;
+import net.slipp.support.Jdbc.JdbcTemplate;
+import net.slipp.support.Jdbc.PreparedStatementSetter;
+import net.slipp.support.Jdbc.RowMapper;
 
 public class UserDAO {
 
-	public void addUser(User user) throws SQLException {
+	public void addUser(User user){
 		
 		JdbcTemplate jdbc = new JdbcTemplate();
 		
@@ -24,7 +24,7 @@ public class UserDAO {
 	}
 
 
-	public User findByUserId(String userId) throws SQLException{
+	public User findByUserId(String userId){
 		
 		RowMapper<User> rm = new RowMapper<User>() {
 			
@@ -43,7 +43,7 @@ public class UserDAO {
 
 	}
 
-	public void removeUser(String userId) throws SQLException {
+	public void removeUser(String userId) {
 
 		JdbcTemplate jdbc = new JdbcTemplate();
 		
@@ -51,7 +51,7 @@ public class UserDAO {
 		jdbc.executeUpdate(sql, userId);
 	}
 
-	public void updateUser(User user) throws SQLException {
+	public void updateUser(User user) {
 
 		JdbcTemplate jdbc = new JdbcTemplate();
 		
@@ -60,7 +60,7 @@ public class UserDAO {
 	}
 
 
-	public List<User> findUsers() throws SQLException{
+	public List<User> findUsers() {
 		
 		RowMapper <User> rm = new RowMapper <User>() {
 			

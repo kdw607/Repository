@@ -1,4 +1,4 @@
-package net.slipp.support;
+package net.slipp.support.Jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

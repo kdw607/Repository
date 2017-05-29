@@ -53,11 +53,8 @@ public class CreateUserServlet extends HttpServlet {
 		}		
 		
 		UserDAO userDAO = new UserDAO();
-		
-		try {
-			userDAO.addUser(user);
-		} catch (SQLException e) {
-		}
+		userDAO.addUser(user);
+
 		
 		resp.sendRedirect("/");
 	}

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import net.slipp.support.Jdbc.ConnectionManager;
 import net.slipp.user.User;
 
 public abstract class bark_SelectJdbcTemplate {

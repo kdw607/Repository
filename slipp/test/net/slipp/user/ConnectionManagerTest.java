@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import net.slipp.support.ConnectionManager;
+import net.slipp.support.Jdbc.ConnectionManager;
 
 import org.junit.Test;
 

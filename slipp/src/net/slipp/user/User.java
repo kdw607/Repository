@@ -98,13 +98,7 @@ public class User {
 		//User user = Database.findByUserId(userId);
 		
 		UserDAO userDAO = new UserDAO();
-		User user = null;
-		try {
-			user = userDAO.findByUserId(userId);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
+		User user = userDAO.findByUserId(userId);
 		
 		if(user == null){
 			throw new UserNotFoundException();

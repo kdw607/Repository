@@ -30,8 +30,7 @@ public class ApiFindUserServlet extends HttpServlet{
 		
 		UserDAO userDao = new UserDAO();
 		
-		try {
-			
+
 			User user = userDao.findByUserId(userId);
 			if(user == null){
 				return;
@@ -47,9 +46,6 @@ public class ApiFindUserServlet extends HttpServlet{
 			PrintWriter out = resp.getWriter();
 			out.print(jsonData);
 			
-		} catch (SQLException e) {
-		}
-		
 	}
 	
 }
