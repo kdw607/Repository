@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import net.slipp.support.JdbcTemplate;
 import net.slipp.support.PreparedStatementSetter;
@@ -56,5 +57,24 @@ public class UserDAO {
 		
 		String sql = "update users set password=?, name=?, email=? where userId=?";
 		jdbc.executeUpdate(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
+	}
+
+
+	public List<User> findUsers() throws SQLException{
+		
+		RowMapper <User> rm = new RowMapper <User>() {
+			
+			@Override
+			public User mapRow(ResultSet rs) throws SQLException {
+				return new User(rs.getString("userId"),
+								rs.getString("password"),
+								rs.getString("name"),
+								rs.getString("email"));
+			}
+		};
+		JdbcTemplate jdbc = new JdbcTemplate();
+		String sql = "select * from users";
+		return jdbc.list(sql, rm);
+
 	}
 }

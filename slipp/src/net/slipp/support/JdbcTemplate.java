@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.slipp.user.User;
 import net.slipp.user.UserDAO;
@@ -41,7 +43,13 @@ public class JdbcTemplate {
 		
 	}
 	
-	public <T> T executeQuery(String sql, RowMapper<T> rm, PreparedStatementSetter pss)
+	public <T> T executeQuery(String sql, RowMapper<T> rm,  Object... parameters)
+			throws SQLException{
+		
+		return executeQuery(sql, rm, createPreparedstatementSetter(parameters));
+	}
+	
+	public <T> List<T> list(String sql, RowMapper<T> rm, PreparedStatementSetter pss)
 			throws SQLException{
 		
 		Connection conn=null;
@@ -51,15 +59,15 @@ public class JdbcTemplate {
 		try {
 			conn = ConnectionManager.getConnection();
 			pstmt = conn.prepareStatement(sql);
-			pss.setParameters(pstmt);	
+			pss.setParameters(pstmt);
 			
 			rs = pstmt.executeQuery();
 			
-			if(!rs.next()){
-				return null;
+			List<T> list = new ArrayList<T>();
+			while(rs.next()){
+				list.add(rm.mapRow(rs));
 			}
-			
-			return rm.mapRow(rs);
+			return list;
 		}finally{
 			if(rs != null){
 				rs.close();
@@ -74,16 +82,13 @@ public class JdbcTemplate {
 	}
 	
 	
-	public <T> T executeQuery(String sql, RowMapper<T> rm,  Object... parameters)
+	public <T> List<T> list(String sql, RowMapper<T> rm,  Object... parameters)
 			throws SQLException{
-		
-		PreparedStatementSetter pss = createPreparedstatementSetter(parameters);
-		return executeQuery(sql, rm, pss);
+
+		return list(sql, rm, createPreparedstatementSetter(parameters));
 	}
 
-	
-	
-	
+
 	private PreparedStatementSetter createPreparedstatementSetter(Object... parameters) {
 		return new PreparedStatementSetter() {
 			
