@@ -33,7 +33,7 @@ public class JdbcTemplate {
 		}
 	}
 	
-	public Object executeQuery(String sql, PreparedStatementSetter pss, RowMapper rm)
+	public <T> T executeQuery(String sql, PreparedStatementSetter pss, RowMapper<T> rm)
 			throws SQLException{
 		
 		Connection conn=null;
