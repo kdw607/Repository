@@ -43,6 +43,18 @@ public class JdbcTemplate {
 		
 	}
 	
+	public <T> T executeQuery(String sql, RowMapper<T> rm, PreparedStatementSetter pss)
+			throws SQLException{
+		
+		List<T> list = list(sql, rm, pss);
+		if(list.isEmpty()){
+			return null;
+		}
+		return list.get(0);
+	}
+	
+	
+	
 	public <T> T executeQuery(String sql, RowMapper<T> rm,  Object... parameters)
 			throws SQLException{
 		
