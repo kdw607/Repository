@@ -16,32 +16,14 @@ public class UserDAO {
 
 	public void addUser(User user) throws SQLException {
 		
-		PreparedStatementSetter pss = new PreparedStatementSetter() {
-			
-			@Override
-			public void setParameters(PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1, user.getUserId());
-				pstmt.setString(2, user.getPassword());
-				pstmt.setString(3, user.getName());
-				pstmt.setString(4, user.getEmail());				
-			}
-		};
 		JdbcTemplate jdbc = new JdbcTemplate();
 		
 		String sql = "insert into users values(?, ?, ?, ?)";
-		jdbc.executeUpdate(sql, pss);
+		jdbc.executeUpdate(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 	}
 
 
 	public User findByUserId(String userId) throws SQLException{
-		
-		PreparedStatementSetter pss = new PreparedStatementSetter() {
-			
-			@Override
-			public void setParameters(PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1, userId);
-			}
-		};
 		
 		RowMapper<User> rm = new RowMapper<User>() {
 			
@@ -56,39 +38,23 @@ public class UserDAO {
 		JdbcTemplate jdbc = new JdbcTemplate();
 
 		String sql = "select * from users where userId = ?";
-		return jdbc.executeQuery(sql, pss, rm);
+		return jdbc.executeQuery(sql, rm, userId);
 
 	}
 
 	public void removeUser(String userId) throws SQLException {
 
-		PreparedStatementSetter pss = new PreparedStatementSetter() {
-			
-			@Override
-			public void setParameters(PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1, userId);				
-			}
-		};
 		JdbcTemplate jdbc = new JdbcTemplate();
 		
 		String sql = "delete from users where userId = ?";
-		jdbc.executeUpdate(sql, pss);
+		jdbc.executeUpdate(sql, userId);
 	}
 
 	public void updateUser(User user) throws SQLException {
-		PreparedStatementSetter pss = new PreparedStatementSetter() {
-			
-			@Override
-			public void setParameters(PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1, user.getPassword());
-				pstmt.setString(2, user.getName());
-				pstmt.setString(3, user.getEmail());
-				pstmt.setString(4, user.getUserId());				
-			}
-		};
+
 		JdbcTemplate jdbc = new JdbcTemplate();
 		
 		String sql = "update users set password=?, name=?, email=? where userId=?";
-		jdbc.executeUpdate(sql, pss);
+		jdbc.executeUpdate(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
 	}
 }
