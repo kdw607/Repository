@@ -35,16 +35,8 @@ public class JdbcTemplate {
 	
 	public void executeUpdate(String sql, Object... parameters) throws SQLException {
 		
-		PreparedStatementSetter pss = new PreparedStatementSetter() {
-			
-			@Override
-			public void setParameters(PreparedStatement pstmt) throws SQLException {
-				for (int i = 0; i < parameters.length; i++) {
-					pstmt.setObject(i+1, parameters[i]);
-				}
-			}
-		};
 		
+		PreparedStatementSetter pss = createPreparedstatementSetter(parameters);
 		executeUpdate(sql, pss);
 		
 	}
@@ -81,10 +73,19 @@ public class JdbcTemplate {
 		}
 	}
 	
+	
 	public <T> T executeQuery(String sql, RowMapper<T> rm,  Object... parameters)
 			throws SQLException{
 		
-		PreparedStatementSetter pss = new PreparedStatementSetter() {
+		PreparedStatementSetter pss = createPreparedstatementSetter(parameters);
+		return executeQuery(sql, rm, pss);
+	}
+
+	
+	
+	
+	private PreparedStatementSetter createPreparedstatementSetter(Object... parameters) {
+		return new PreparedStatementSetter() {
 			
 			@Override
 			public void setParameters(PreparedStatement pstmt) throws SQLException {
@@ -93,6 +94,5 @@ public class JdbcTemplate {
 				}
 			}
 		};
-		return executeQuery(sql, rm, pss);
 	}
 }
